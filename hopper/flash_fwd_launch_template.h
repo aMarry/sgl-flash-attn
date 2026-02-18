@@ -27,11 +27,7 @@ using namespace cute;
 
 template <int Arch, int kHeadDim, int kHeadDimV, int ClusterM, typename Element, typename ElementOut,
           bool Is_causal, bool Is_local, bool Has_softcap, bool Varlen, bool PagedKVNonTMA, bool AppendKV, bool HasQv,
-<<<<<<< HEAD
-          bool PackGQA, bool Split, bool V_colmajor, bool Use_one_mma_wg, bool Has_sparse_mask=false>
-=======
-          bool PackGQA, bool Split, bool V_colmajor>
->>>>>>> parent of 0da79e2 (feat: try impl masked mha for sm90a (#24))
+          bool PackGQA, bool Split, bool V_colmajor, bool Use_one_mma_wg>
 void run_flash_fwd(Flash_fwd_params &params, cudaStream_t stream) {
     static_assert(!(Is_causal && Is_local), "Causal and Local cannot be enabled at the same time");
     static_assert(!(AppendKV && V_colmajor), "AppendKV and V_colmajor cannot be enabled at the same time");
@@ -226,11 +222,7 @@ void run_mha_fwd_(Flash_fwd_params &params, cudaStream_t stream) {
                             // Only use Cluster if number of tiles along seqlen_q is even and not varlen
                             CLUSTER_SWITCH(cutlass::ceil_div(params.seqlen_q * (!PackGQA ? 1 : params.h / params.h_k), kBlockM) % 2 == 0, Use_cluster, [&] {
                                 static constexpr int ClusterM = Enable_cluster && Use_cluster ? 2 : 1;
-                                // Sparse mask is only supported on SM90+ and requires Varlen mode
-                                // When Has_sparse_mask is true, causal/local masks are bypassed (handled by sparse mask)
-                                SPARSE_MASK_SWITCH(params.use_sparse_mask && Arch >= 90 && Varlen, Has_sparse_mask, [&] {
-                                    run_flash_fwd<Arch, kHeadDim, kHeadDimV, ClusterM, T, T_out, Is_causal, Is_local, Has_softcap, Varlen, PagedKVNonTMA, AppendKV && Varlen, HasQv, PackGQA, Split, V_colmajor, Use_one_mma_wg, Has_sparse_mask>(params, stream);
-                                });
+                                run_flash_fwd<Arch, kHeadDim, kHeadDimV, ClusterM, T, T_out, Is_causal, Is_local, Has_softcap, Varlen, PagedKVNonTMA, AppendKV && Varlen, HasQv, PackGQA, Split, V_colmajor, Use_one_mma_wg>(params, stream);
                             });
                         });
                     });
