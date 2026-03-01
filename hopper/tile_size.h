@@ -24,7 +24,7 @@ constexpr std::tuple<int, int, bool, bool> tile_size_fwd_sm90(
                     return {64, 192, true, true};
                 } else {
                     // Switch to tile size 192 x 192 for now
-                    bool const use_blockN_128 = is_causal || is_local || paged_kv_non_TMA;
+                    bool const use_blockN_128 = is_causal || (!is_local && paged_kv_non_TMA);
                     return {192, use_blockN_128 ? 128 : 192, use_blockN_128, true};
                 }
             }
