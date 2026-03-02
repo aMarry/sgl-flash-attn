@@ -11,7 +11,7 @@ cp -f sgl_fa4/rename_imports.py build/rename_imports.py
 
 python build/rename_imports.py --target-dir build/sgl_fa4/cute --old-pkg "flash_attn.cute" --new-pkg "sgl_fa4.cute"
 
-python -m build build/sgl_fa4/cute --wheel --no-isolation
+python -m build build/sgl_fa4/cute --wheel
 cp build/sgl_fa4/cute/dist/*.whl ./dist
 
 rm -rf build/
