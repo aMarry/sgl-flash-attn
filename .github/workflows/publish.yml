@@ -7,10 +7,10 @@
 
 name: Build wheels and deploy
 
-on:
-  create:
-    tags:
-      - v*
+# on:
+#   create:
+#     tags:
+#       - v*
 
 jobs:
   setup_release:
